@@ -9,6 +9,8 @@ This project is capable to work on most of the EVM chains but sometimes might no
 ### ✅ Requirements
 Before listen and pool's events, change .env.example to .env and provide WSS_PROVIDER_URL, POOL_ADDRESS and select EVENT_NAME
 
+after that go into terminal with ctrl + j then type `npm install`
+
 ---
 
 ### 📜 Pool Events
