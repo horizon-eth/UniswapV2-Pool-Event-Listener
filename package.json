@@ -1,0 +1,36 @@
+{
+  "name": "uniswapv2-pool-event-listener-with-ethers-v5-v6",
+  "version": "1.0.0",
+  "main": "",
+  "scripts": {
+    "ethersv5": "node ./scripts/poolListenerEthersV5.js",
+    "ethersv6": "node ./scripts/poolListenerEthersV6.js",
+    "ethersv5:dev": "nodemon ./scripts/poolListenerEthersV5.js",
+    "ethersv6:dev": "nodemon ./scripts/poolListenerEthersV6.js"
+  },
+  "keywords": [
+    "uniswap",
+    "uniswapv2",
+    "ethersv5",
+    "ethersv6",
+    "defi",
+    "dex",
+    "ethereum",
+    "blockchain",
+    "liquidity pool",
+    "lp",
+    "amm",
+    "cpmm",
+    "cplp"
+  ],
+  "author": "horizon-eth",
+  "license": "ISC",
+  "description": "uniswapv2 pool event listener with ethers v5 + v6",
+  "dependencies": {
+    "@uniswap/v2-core": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "ethers5": "npm:ethers@^5.7.2",
+    "ethers6": "npm:ethers@^6.0.0",
+    "nodemon": "^3.1.7"
+  }
+}
