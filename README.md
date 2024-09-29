@@ -1,73 +1,92 @@
 # 🦄 Uniswap V2 Pool Event Listening
 
-Uniswap V2 is a decentralized exchange protocol that allows users to swap ERC-20 tokens. Listening to events in the pool provides insights into liquidity movements and swap activities, enabling developers to build real-time applications and analytics.
+Uniswap V2 is a decentralized exchange protocol that allows users to trade tokens without the need for a trusted intermediary. By listening to pool events in Uniswap V2, developers can gain insights into key actions such as swaps, liquidity provision, and token burns/mints, helping them create applications with real-time data updates.
 
 ### 📦 Overview
-This repository provides examples of how to listen for various events in a Uniswap V2 pool using ethersV5.7.2 and ethersV6.0.0.
-This project is capable to work on most of the EVM chains but sometimes might not work properly or completely, so feel free to reach me.
+This repository provides examples of how to listen for various events in a Uniswap V2 pool using **ethers v5.7.2** and **ethers v6.0.0**.  
+It works across most EVM-compatible chains, but if you experience any issues, feel free to reach out for assistance.
 
 ### ✅ Requirements
-Before listen and pool's events, change .env.example to .env and provide WSS_PROVIDER_URL, POOL_ADDRESS and select EVENT_NAME
+1. Rename `.env.example` to `.env` and provide the following environment variables:
+   - `WSS_PROVIDER_URL`: WebSocket URL for your provider (e.g., Infura, Alchemy).
+   - `POOL_ADDRESS`: The address of the Uniswap V2 pool.
+   - `EVENT_NAME`: The event you want to listen to (see below for event names).
 
-after that go into terminal with ctrl + j then type `npm install`
+2. Install project dependencies by running the following command:
+   ```bash
+   npm install
+   ```
 
----
+--- 
 
-### 📜 Pool Events
-| Event Name | Description | Returns |
-|------------|-------------|---------|
-| **Sync**   | Updates the reserves | `(reserve0, reserve1)` |
-| **Swap**   | Details of token swaps | `(sender, amount0In, amount1In, amount0Out, amount1Out, to)` |
-| **Mint**   | Details of liquidity added | `(sender, amount0, amount1)` |
-| **Burn**   | Details of liquidity removed | `(sender, amount0, amount1, to)` |
+### 📜 Pool Events in Uniswap V2
+
+Uniswap V2 pool events allow you to listen to key actions within a liquidity pool. These events can provide valuable insights for tracking liquidity, swaps, and reserves.
+
+| Event Name    | Returns                                            |
+|---------------|----------------------------------------------------|
+| **Swap**      | `(sender, amount0In, amount1In, amount0Out, amount1Out, to)` |
+| **Sync**      | `(reserve0, reserve1)` |
+| **Mint**      | `(sender, amount0, amount1)` |
+| **Burn**      | `(sender, amount0, amount1, to)` |
+
+- **Swap**: Triggered whenever a swap happens, indicating which tokens were swapped and in what quantity.
+- **Sync**: Triggered when the reserves of the pool are updated.
+- **Mint**: Fired when liquidity is added to the pool.
+- **Burn**: Fired when liquidity is removed from the pool.
 
 ---
 
 ### 🔊 Pool Listening Functions
 
-#### *ethersV5*
-- **`pool.on()`**: Listen for event continuously
-- **`pool.once()`**: Listen for event just for once and stop listening after that
-- **`pool.off()`**: Cancel listening process for event
-- **`pool.removeListener()`**: Cancel listening process for event for a single listener
-- **`pool.removeAllListeners()`**: Cancel listening process for event for all listeners
+#### *ethers v5*
+In **ethers v5**, the following methods are used to listen for events emitted by the pool:
 
-#### *ethersV6*
-*All functions return **Promise** except `pool.getEvent()`*
-- **`pool.addListener()`**: Listen for event continuously
-- **`pool.on()`**: Listen for event continuously
-- **`pool.once()`**: Listen for event just for once and stop listening after that
-- **`pool.off()`**: Cancel listening process for event
-- **`pool.removeListener()`**: Cancel listening process for event for a single listener
-- **`pool.removeAllListeners()`**: Cancel listening process for event for all listeners
+- **`pool.on(eventName, listener)`**: Listen for an event continuously, reacting to every occurrence of the event.
+- **`pool.once(eventName, listener)`**: Listen for an event once, then stop listening after the first occurrence.
+- **`pool.off(eventName, listener)`**: Remove a specific listener for an event, stopping it from receiving future events.
+- **`pool.removeListener(eventName, listener)`**: Alias for `off`, removing a specific listener.
+- **`pool.removeAllListeners(eventName)`**: Remove all listeners for a specific event.
+
+#### *ethers v6*
+In **ethers v6**, the API is slightly adjusted, but the functionality remains similar:
+
+- **`pool.addListener(eventName, listener)`**: Listen for an event continuously (alias for `on`).
+- **`pool.on(eventName, listener)`**: Same as `addListener`, listens continuously.
+- **`pool.once(eventName, listener)`**: Listen for an event once, then stop.
+- **`pool.off(eventName, listener)`**: Remove a specific listener from an event.
+- **`pool.removeListener(eventName, listener)`**: Alias for `off`, removes a specific listener.
+- **`pool.removeAllListeners(eventName)`**: Remove all listeners for a specific event.
 
 ---
 
 ### 📊 Pool Listener Info
-| Method | Description |
-|--------|-------------|
-| **`pool.listeners()`** | Returns an array of listeners registered for a specific event. |
-| **`pool.listenerCount()`** | Returns the count of listeners registered for a specific event. |
+
+The following methods allow you to query listener information:
+
+| Method                            | Description                                          |
+|------------------------------------|------------------------------------------------------|
+| **`pool.listeners(eventName)`**  | Returns an array of listeners registered for the event. |
+| **`pool.listenerCount(eventName)`** | Returns the number of listeners registered for the event. |
 
 ---
 
-### 🗂️ Pool Query Historical Event Data
+### 🗂️ Query Historical Pool Event Data
 
-#### *ethersV5*
-- **`pool.queryFilter()`**: 
-  - Provides historic access to event data for a specific event.
-  - **Parameters**: 
-    - `fromBlock` (default: `0`): The starting block number.
-    - `toBlock` (default: `"latest"`): The ending block number (inclusive).
-  
-#### *ethersV6*
-- **`pool.queryFilter()`**: 
-  - Provides historic access to event data for a specific event.
-  - **Parameters**: 
-    - `fromBlock` (default: `0`): The starting block number.
-    - `toBlock` (default: `"latest"`): The ending block number (inclusive).
-  
-- **`pool.getEvent()`**: 
-  - Returns the event for a given name.
-  - **Use Case**: This is useful when a contract event name conflicts with a JavaScript name such as `prototype` or when using a Contract programmatically.
+To query past events in the pool's history, use the following methods.
 
+#### *ethers v5*
+- **`pool.queryFilter(eventName, fromBlock, toBlock)`**:
+  - Fetches historical event data for a specific event.
+  - **Parameters**:
+    - `eventName`: The event you want to query (optional).
+    - `fromBlock` (default: `0`): The starting block number for the query.
+    - `toBlock` (default: `"latest"`): The ending block number for the query.
+
+#### *ethers v6*
+- **`pool.queryFilter(eventName, fromBlock, toBlock)`**: Same as v5, used to fetch historical events.
+- **`pool.getEvent(eventName)`**:
+  - Returns the event object for a given name.
+  - **Use Case**: Helpful when event names conflict with JavaScript reserved words or for programmatically accessing contract events.
+
+---
